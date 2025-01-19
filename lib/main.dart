@@ -1,5 +1,4 @@
-import 'package:counter_app/cubit/counter_cubit.dart';
-import 'package:counter_app/cubit/counter_state.dart';
+import 'package:counter_app/bloc/counter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,8 +12,8 @@ class I4oofi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CounterCubit(),
-      child: MaterialApp(
+      create: (context) => CounterBloc(),
+      child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: HomePage(),
       ),
@@ -24,11 +23,11 @@ class I4oofi extends StatelessWidget {
 
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CounterCubit, CounterState>(
+    return BlocConsumer<CounterBloc, CounterState>(
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
@@ -52,16 +51,24 @@ class HomePage extends StatelessWidget {
                             'Team A',
                             style: TextStyle(fontSize: 32),
                           ),
-                          Text(
-                            '${BlocProvider.of<CounterCubit>(context).teamApoints}',
-                            style: const TextStyle(
-                              fontSize: 150,
-                            ),
+                          BlocBuilder<CounterBloc, CounterState>(
+                            builder: (context, state) {
+                              if (state is TeamIncreament) {
+                                return Text(
+                                  '${state.teamA}',
+                                  style: const TextStyle(
+                                    fontSize: 150,
+                                  ),
+                                );
+                              }
+                              return const Text('Start the game',
+                                  style: TextStyle(fontSize: 20));
+                            },
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              BlocProvider.of<CounterCubit>(context)
-                                  .TeamIncreament(buttonNumber: 1, team: 'A');
+                              context.read<CounterBloc>().add(
+                                  TeamIncreamentEvent(points: 1, team: 'A'));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
@@ -80,8 +87,8 @@ class HomePage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              BlocProvider.of<CounterCubit>(context)
-                                  .TeamIncreament(buttonNumber: 2, team: 'A');
+                              context.read<CounterBloc>().add(
+                                  TeamIncreamentEvent(points: 2, team: 'A'));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
@@ -100,8 +107,8 @@ class HomePage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              BlocProvider.of<CounterCubit>(context)
-                                  .TeamIncreament(buttonNumber: 3, team: 'A');
+                              context.read<CounterBloc>().add(
+                                  TeamIncreamentEvent(points: 3, team: 'A'));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
@@ -138,14 +145,22 @@ class HomePage extends StatelessWidget {
                             'Team B',
                             style: TextStyle(fontSize: 32),
                           ),
-                          Text(
-                            '${BlocProvider.of<CounterCubit>(context).teamBpoints}',
-                            style: const TextStyle(fontSize: 150),
+                          BlocBuilder<CounterBloc, CounterState>(
+                            builder: (context, state) {
+                              if (state is TeamIncreament) {
+                                return Text(
+                                  '${state.teamB}',
+                                  style: TextStyle(fontSize: 150),
+                                );
+                              }
+                              return const Text('Start the game',
+                                  style: TextStyle(fontSize: 20));
+                            },
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              BlocProvider.of<CounterCubit>(context)
-                                  .TeamIncreament(buttonNumber: 1, team: 'B');
+                              context.read<CounterBloc>().add(
+                                  TeamIncreamentEvent(points: 1, team: 'B'));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
@@ -164,8 +179,8 @@ class HomePage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              BlocProvider.of<CounterCubit>(context)
-                                  .TeamIncreament(buttonNumber: 2, team: 'B');
+                              context.read<CounterBloc>().add(
+                                  TeamIncreamentEvent(points: 2, team: 'B'));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
@@ -184,8 +199,8 @@ class HomePage extends StatelessWidget {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              BlocProvider.of<CounterCubit>(context)
-                                  .TeamIncreament(buttonNumber: 3, team: 'B');
+                              context.read<CounterBloc>().add(
+                                  TeamIncreamentEvent(points: 3, team: 'B'));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
@@ -209,7 +224,7 @@ class HomePage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    BlocProvider.of<CounterCubit>(context).ReturntoZero();
+                    context.read<CounterBloc>().add(ResetEvent());
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 142, 10, 160),
